@@ -1,0 +1,56 @@
+plugins {
+    id "java"
+}
+
+dependencies {
+    implementation project(":")
+}
+
+sourceSets {
+    primary {
+        java {
+            srcDirs = ["primary/java"]
+        }
+        resources {
+            srcDirs = ["primary/resources"]
+        }
+    }
+
+    secondary {
+        java {
+            srcDirs = ["secondary/java"]
+        }
+        resources {
+            srcDirs = ["secondary/resources"]
+        }
+    }
+}
+
+
+File jarOutputDir = new File(rootDir, "jars")
+var jarTasks = new HashSet<org.gradle.jvm.tasks.Jar>()
+
+sourceSets.configureEach {
+    if (it.name == "test" || it.name == "main") return
+    var t = tasks.register("jar_" + it.name, org.gradle.jvm.tasks.Jar) { t ->
+        from it.output
+        destinationDirectory = jarOutputDir
+        archiveFileName.set it.name + ".jar"
+    }
+    jarTasks.add t.get()
+    // this project isn't run directly so i only care about compile
+    it.compileClasspath = sourceSets.main.compileClasspath
+}
+
+sourceSets {
+    primary {
+        java {
+            compileClasspath += sourceSets.secondary.output
+        }
+    }
+}
+
+
+tasks.register ("allJars") {
+    dependsOn jarTasks
+}

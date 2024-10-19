@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "xyz.ashyboxy.advl.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "TestMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "minVersion": "0.8.7"
+}

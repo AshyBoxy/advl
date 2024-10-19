@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+//    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8"
+}
+
+group = 'xyz.ashyboxy.advl'
+version = '1.0-SNAPSHOT'
+
+repositories {}
+
+dependencies {
+    implementation "org.ow2.asm:asm:9.6"
+    implementation "org.ow2.asm:asm-commons:9.6"
+    implementation "org.ow2.asm:asm-tree:9.6"
+    implementation "org.ow2.asm:asm-util:9.6"
+    implementation "net.fabricmc:sponge-mixin:0.15.3+mixin.0.8.7"
+
+    implementation "xyz.ashyboxy:uwuifier:1.0.2"
+
+//    testImplementation platform('org.junit:junit-bom:5.10.0')
+//    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+sourceSets {
+    common {
+        java {
+            srcDir "src/common"
+        }
+        compileClasspath += main.compileClasspath
+    }
+    compile {
+        java {
+            srcDir "src/compile"
+        }
+        compileClasspath += common.output
+        compileClasspath += main.compileClasspath
+    }
+    main {
+        compileClasspath += compile.output
+        compileClasspath += common.output
+        runtimeClasspath += common.output
+    }
+}
+
+// i will learn tests later
+//test {
+//    useJUnitPlatform()
+//}
+
+tasks.register("run", JavaExec) {
+    dependsOn ":testjars:allJars"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "xyz.ashyboxy.advl.asm.parent.Bootstrap"
+}
+
+//idea {
+//    project {
+//        runConfigurations {
+//            "ASM"(Application) {
+//
+//            }
+//        }
+//    }
+//}

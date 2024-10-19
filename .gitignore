@@ -1,0 +1,8 @@
+.gradle/
+build/
+out/
+.idea/
+
+.mixin.out/
+jars/
+gen/
