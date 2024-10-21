@@ -6,3 +6,5 @@ out/
 .mixin.out/
 jars/
 gen/
+
+!src/**/gen
