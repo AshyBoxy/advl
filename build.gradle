@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-library'
 //    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8"
 }
 
@@ -9,11 +10,11 @@ version = '1.0-SNAPSHOT'
 repositories {}
 
 dependencies {
-    implementation "org.ow2.asm:asm:9.6"
-    implementation "org.ow2.asm:asm-commons:9.6"
-    implementation "org.ow2.asm:asm-tree:9.6"
-    implementation "org.ow2.asm:asm-util:9.6"
-    implementation "net.fabricmc:sponge-mixin:0.15.3+mixin.0.8.7"
+    api "org.ow2.asm:asm:9.6"
+    api "org.ow2.asm:asm-commons:9.6"
+    api "org.ow2.asm:asm-tree:9.6"
+    api "org.ow2.asm:asm-util:9.6"
+    api "net.fabricmc:sponge-mixin:0.15.3+mixin.0.8.7"
 
     implementation "xyz.ashyboxy:uwuifier:1.0.2"
 

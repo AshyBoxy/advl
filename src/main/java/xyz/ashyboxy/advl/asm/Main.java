@@ -1,16 +1,24 @@
 package xyz.ashyboxy.advl.asm;
 
 import org.objectweb.asm.ClassReader;
+import org.spongepowered.asm.mixin.Mixins;
 import xyz.ashyboxy.advl.asm.parent.Logger;
 import xyz.ashyboxy.advl.asm.parent.TransformingClassLoader;
+import xyz.ashyboxy.advl.asm.parent.transformers.MixinTransformerProvider;
 import xyz.ashyboxy.advl.asm.transform.DummyFieldHaver;
 import xyz.ashyboxy.advl.jar.JarHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.jar.JarFile;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static xyz.ashyboxy.advl.asm.parent.Consts.*;
 
@@ -57,14 +65,6 @@ public class Main {
             dummy.copied();
         }
 
-        if (DO_ISOLATION_TEST) {
-            Logger.log(LOG_BREAK);
-            Logger.log("Checking ClassLoader load order and transformations (and mixins)");
-            Logger.log("Uwuifier.uwuify should've been replaced with a method that just returns \"uwu\"");
-            Logger.log("And then a mixin should've been injected at its head:");
-            IsolatedTest.run();
-        }
-
         if (DO_JARS) {
             Logger.log(LOG_BREAK);
             Logger.log("Looking for jars");
@@ -73,8 +73,21 @@ public class Main {
             jf.mkdirs();
             List<File> jars = JarHelper.findJars(jf);
             Logger.log("Found jars:");
-            for (File jar : jars) Logger.log("   ", jar.getName());
-            for (File jar : jars) cl.addURL(jar.toURI().toURL());
+            for (File jar : jars) {
+                Logger.log("   ", jar.getName());
+                cl.addURL(jar.toURI().toURL());
+
+                try (ZipFile file = new ZipFile(jar)) {
+                    ZipEntry entry = file.getEntry("advl.mixin.conf");
+                    if (entry == null) continue;
+                    String mixinPath = new BufferedReader(new InputStreamReader(file.getInputStream(entry))).readLine();
+                    if (mixinPath.isEmpty()) continue;
+                    Logger.log("Adding mixin configuration", mixinPath);
+                    Mixins.addConfiguration(mixinPath);
+                }
+            }
+
+            MixinTransformerProvider.start();
 
             Logger.log("Trying to load woah.txt (from primary.jar)");
             URL woahURL = cl.getResource("woah.txt");
@@ -88,6 +101,14 @@ public class Main {
             Class.forName("xyz.ashyboxy.advl.ext.primary.ExtTest")
                     .getMethod("test").invoke(null);
 
+        }
+
+        if (DO_ISOLATION_TEST) {
+            Logger.log(LOG_BREAK);
+            Logger.log("Checking ClassLoader load order and transformations (and mixins)");
+            Logger.log("Uwuifier.uwuify should've been replaced with a method that just returns \"uwu\"");
+            Logger.log("And then a mixin should've been injected at its head:");
+            IsolatedTest.run();
         }
     }
 }

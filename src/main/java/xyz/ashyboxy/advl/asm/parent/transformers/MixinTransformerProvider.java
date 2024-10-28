@@ -14,6 +14,8 @@ import java.util.List;
 
 public class MixinTransformerProvider implements TransformerProvider {
     public static boolean MIXIN_READY = false;
+    private static boolean INITED = false;
+    private static boolean STARTED = false;
 
     private static final List<String> mixinDebugProperties = List.of(
             "mixin.debug.export", "mixin.debug.countInjections", "mixin.debug.strict",
@@ -21,6 +23,8 @@ public class MixinTransformerProvider implements TransformerProvider {
     );
 
     public static void init () {
+        if (INITED) throw new IllegalStateException("Mixin is already initialized");
+
         System.setProperty("mixin.bootstrapService", AdvlMixinBootstrapService.class.getName());
         System.setProperty("mixin.service", AdvlMixinService.class.getName());
         System.setProperty("mixin.env.obf", "false");
@@ -41,12 +45,23 @@ public class MixinTransformerProvider implements TransformerProvider {
             Method gotoPhase = MixinEnvironment.class.getDeclaredMethod("gotoPhase", MixinEnvironment.Phase.class);
             gotoPhase.setAccessible(true);
             gotoPhase.invoke(null, MixinEnvironment.Phase.INIT);
-            gotoPhase.invoke(null, MixinEnvironment.Phase.DEFAULT);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         MIXIN_READY = true;
+    }
+
+    public static void start() {
+        if (STARTED) throw new IllegalStateException("Mixin is already started");
+
+        try {
+            Method gotoPhase = MixinEnvironment.class.getDeclaredMethod("gotoPhase", MixinEnvironment.Phase.class);
+            gotoPhase.setAccessible(true);
+            gotoPhase.invoke(null, MixinEnvironment.Phase.DEFAULT);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
