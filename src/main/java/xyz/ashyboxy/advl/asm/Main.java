@@ -1,34 +1,37 @@
 package xyz.ashyboxy.advl.asm;
 
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.spongepowered.asm.mixin.Mixins;
-import xyz.ashyboxy.advl.asm.parent.Logger;
-import xyz.ashyboxy.advl.asm.parent.TransformingClassLoader;
-import xyz.ashyboxy.advl.asm.parent.transformers.MixinTransformerProvider;
 import xyz.ashyboxy.advl.asm.transform.DummyFieldHaver;
 import xyz.ashyboxy.advl.jar.JarHelper;
+import xyz.ashyboxy.advl.loader.Logger;
+import xyz.ashyboxy.advl.loader.Potato;
+import xyz.ashyboxy.advl.loader.TransformingClassLoader;
+import xyz.ashyboxy.advl.loader.mixin.MixinTransformerProvider;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.jar.JarFile;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static xyz.ashyboxy.advl.asm.parent.Consts.*;
+import static xyz.ashyboxy.advl.loader.Consts.*;
 
 public class Main {
     private static final String LOG_BREAK = "\n----------";
 
-    public static void main(String[] args) throws Exception {
-        Logger.log("Running with classloader", Main.class.getClassLoader().getClass().getName());
+    public static void main(@Nullable String[] args) throws Exception {
+        Logger.logO("Running with classloader", Main.class.getClassLoader().getClass().getName());
 
-        TransformingClassLoader cl = (TransformingClassLoader) Main.class.getClassLoader();
+        TransformingClassLoader cl;
+        if (!DISABLE_ISOLATION) {
+            cl = (TransformingClassLoader) Main.class.getClassLoader();
+        }
         outputDir.toFile().mkdirs();
 
         if (DO_CLASS_READER) {
@@ -57,7 +60,7 @@ public class Main {
         if (DO_TRANSFORM_TEST) {
             Logger.log(LOG_BREAK);
             Logger.log("Checking for transformations");
-            Logger.log("DummyFieldHaver#getField():", Integer.toString(new DummyFieldHaver().getField()));
+            Logger.logO("DummyFieldHaver#getField():", Integer.toString(new DummyFieldHaver().getField()));
             CopiedMethods.CopiedToMethods dummy = (CopiedMethods.CopiedToMethods) new DummyFieldHaver();
             Logger.log("Calling DummyFieldHaver#copyMe()");
             dummy.copyMe();
@@ -67,14 +70,15 @@ public class Main {
 
         if (DO_JARS) {
             Logger.log(LOG_BREAK);
-            Logger.log("Looking for jars");
 
             File jf = jarDir.toFile();
             jf.mkdirs();
+            Logger.info("Looking for jars in ", jf.toString());
+
             List<File> jars = JarHelper.findJars(jf);
             Logger.log("Found jars:");
             for (File jar : jars) {
-                Logger.log("   ", jar.getName());
+                Logger.logO("   ", jar.getName());
                 cl.addURL(jar.toURI().toURL());
 
                 try (ZipFile file = new ZipFile(jar)) {
@@ -82,7 +86,7 @@ public class Main {
                     if (entry == null) continue;
                     String mixinPath = new BufferedReader(new InputStreamReader(file.getInputStream(entry))).readLine();
                     if (mixinPath.isEmpty()) continue;
-                    Logger.log("Adding mixin configuration", mixinPath);
+                    Logger.logO("Adding mixin configuration", mixinPath);
                     Mixins.addConfiguration(mixinPath);
                 }
             }
@@ -92,9 +96,9 @@ public class Main {
             Logger.log("Trying to load woah.txt (from primary.jar)");
             URL woahURL = cl.getResource("woah.txt");
             if (woahURL != null) {
-                Logger.log("woah.txt is at", woahURL.toString(), ":");
+                Logger.logO("woah.txt is at", woahURL.toString(), ":");
                 Stream<String> woah = Utils.resourceURLReadTextFile(woahURL).lines();
-                woah.forEach(s -> Logger.log("    -", s));
+                woah.forEach(s -> Logger.logO("    -", s));
             } else Logger.log("Could not find woah.txt");
 
             Logger.log("Trying to run ExtTest.test() reflectively");
@@ -109,6 +113,18 @@ public class Main {
             Logger.log("Uwuifier.uwuify should've been replaced with a method that just returns \"uwu\"");
             Logger.log("And then a mixin should've been injected at its head:");
             IsolatedTest.run();
+        }
+
+        if (DO_NEXT) {
+            Logger.log(LOG_BREAK);
+            Logger.info("Calling next class: ", Potato.nextClass);
+
+            // this causes a ton of lag with minecraft (duh)
+            LOG_CLASS_LOADING = false;
+//            LOG_EXTRA_CLASS_LOADING = true;
+
+            Class<?> c = Main.class.getClassLoader().loadClass(Potato.nextClass);
+            c.getMethod("main", String[].class).invoke(null, (Object) Potato.nextArgs);
         }
     }
 }

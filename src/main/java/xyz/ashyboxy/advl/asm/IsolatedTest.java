@@ -1,7 +1,7 @@
 package xyz.ashyboxy.advl.asm;
 
 import xyz.ashyboxy.Uwuifier;
-import xyz.ashyboxy.advl.asm.parent.Logger;
+import xyz.ashyboxy.advl.loader.Logger;
 
 public class IsolatedTest {
     public static void run() {

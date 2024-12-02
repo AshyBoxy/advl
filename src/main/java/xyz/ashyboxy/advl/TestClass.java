@@ -1,6 +1,6 @@
 package xyz.ashyboxy.advl;
 
-import xyz.ashyboxy.advl.asm.parent.Logger;
+import xyz.ashyboxy.advl.loader.Logger;
 
 public class TestClass implements TestInterface, SecondTestInterface {
     private final String messageSuffix;
@@ -10,7 +10,7 @@ public class TestClass implements TestInterface, SecondTestInterface {
     }
 
     public void test() {
-        Logger.log("test class over here:", messageSuffix);
+        Logger.logO("test class over here:", messageSuffix);
     }
 
     public InnerTestClass classTest(int i) {

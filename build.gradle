@@ -17,6 +17,7 @@ dependencies {
     api "net.fabricmc:sponge-mixin:0.15.3+mixin.0.8.7"
 
     implementation "xyz.ashyboxy:uwuifier:1.0.2"
+    implementation "org.jetbrains:annotations:24.0.0"
 
 //    testImplementation platform('org.junit:junit-bom:5.10.0')
 //    testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -51,7 +52,7 @@ sourceSets {
 tasks.register("run", JavaExec) {
     dependsOn ":testjars:allJars"
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = "xyz.ashyboxy.advl.asm.parent.Bootstrap"
+    mainClass = "xyz.ashyboxy.advl.loader.Bootstrap"
 }
 
 //idea {

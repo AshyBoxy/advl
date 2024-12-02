@@ -1,6 +1,6 @@
 package xyz.ashyboxy.advl.asm.transform;
 
-import xyz.ashyboxy.advl.asm.parent.Logger;
+import xyz.ashyboxy.advl.loader.Logger;
 import xyz.ashyboxy.advl.asm.CopiedMethods;
 import xyz.ashyboxy.advl.asm.FieldHaver;
 

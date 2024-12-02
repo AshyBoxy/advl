@@ -1,7 +1,7 @@
 package xyz.ashyboxy.advl.asm;
 
 import org.objectweb.asm.*;
-import xyz.ashyboxy.advl.asm.parent.Logger;
+import xyz.ashyboxy.advl.loader.Logger;
 
 import java.lang.reflect.ClassFileFormatVersion;
 
@@ -14,7 +14,7 @@ public class ClassPrinter extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         String _implements = String.join(", ", interfaces);
         if (!_implements.isEmpty()) _implements = "implements " + _implements;
-        Logger.log(Utils.accessString(access), "class", name, "extends", superName,
+        Logger.logO(Utils.accessString(access), "class", name, "extends", superName,
                 !_implements.isEmpty() ? _implements : "" +
                 "(" + ClassFileFormatVersion.fromMajor(version & 0x00FF).name() + ")",
                 "{");
@@ -61,7 +61,7 @@ public class ClassPrinter extends ClassVisitor {
 
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
-        Logger.log("    " + Utils.accessString(access), "class", name);
+        Logger.logO("    " + Utils.accessString(access), "class", name);
     }
 
     @Override
@@ -71,13 +71,13 @@ public class ClassPrinter extends ClassVisitor {
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-        Logger.log("    " + Utils.accessString(access), descriptor, name);
+        Logger.logO("    " + Utils.accessString(access), descriptor, name);
         return null;
     }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        Logger.log("    " + Utils.accessString(access), name, descriptor);
+        Logger.logO("    " + Utils.accessString(access), name, descriptor);
         return null;
     }
 

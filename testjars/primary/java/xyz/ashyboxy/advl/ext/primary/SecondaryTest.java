@@ -1,6 +1,6 @@
 package xyz.ashyboxy.advl.ext.primary;
 
-import xyz.ashyboxy.advl.asm.parent.Logger;
+import xyz.ashyboxy.advl.loader.Logger;
 import xyz.ashyboxy.advl.ext.secondary.SecondaryThing;
 
 public class SecondaryTest {

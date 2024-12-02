@@ -1,7 +1,7 @@
 package xyz.ashyboxy.advl.asm;
 
 import org.objectweb.asm.*;
-import xyz.ashyboxy.advl.asm.parent.Consts;
+import xyz.ashyboxy.advl.loader.Consts;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -1,0 +1,32 @@
+plugins {
+    id "java"
+    id "java-library"
+    id "advl"
+}
+
+repositories {
+    maven { url = "https://repos.ashyboxy.xyz/maven" }
+    maven { url = "https://repository.ow2.org/" }
+    maven { url = "https://maven.fabricmc.net/" }
+    mavenCentral()
+}
+
+dependencies {
+    api project(":")
+    api project(":").sourceSets.common.output
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+    }
+}
+
+tasks.register("runMc", JavaExec) {
+    dependsOn ":testjars:allJars"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "xyz.ashyboxy.advl.loader.mc.Bootstrap"
+    workingDir = rootDir
+}

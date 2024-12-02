@@ -1,6 +1,7 @@
 rootProject.name = 'advl'
 
 include "testjars"
+include "mc"
 
 dependencyResolutionManagement {
     repositories {

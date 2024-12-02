@@ -8,3 +8,6 @@ jars/
 gen/
 
 !src/**/gen
+
+mcRun/
+logs/
