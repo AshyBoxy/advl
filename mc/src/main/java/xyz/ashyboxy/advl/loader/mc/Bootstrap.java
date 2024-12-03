@@ -3,6 +3,8 @@ package xyz.ashyboxy.advl.loader.mc;
 import xyz.ashyboxy.advl.loader.Consts;
 import xyz.ashyboxy.advl.loader.Logger;
 import xyz.ashyboxy.advl.loader.Potato;
+import xyz.ashyboxy.advl.loader.mc.transformers.BrandingTransformer;
+import xyz.ashyboxy.advl.loader.transformers.ClassTransformer;
 
 public class Bootstrap {
     public static void main(String[] args) throws Exception {
@@ -16,6 +18,9 @@ public class Bootstrap {
             "--versionType", "release",
             "--gameDir", Consts.baseDir.resolve("mcRun").toAbsolutePath().toString()
         };
+
+        ClassTransformer.addTransformerProvider(new BrandingTransformer());
+
         xyz.ashyboxy.advl.loader.Bootstrap.main(args);
     }
 }

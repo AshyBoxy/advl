@@ -5,25 +5,23 @@ public class Logger {
         if (message.length == 0) return "";
         if (message.length == 1) return message[0];
 
-//        StringBuilder sb = new StringBuilder();
-//        String[] parts = message[0].split("\\{}");
-//
-//        int i = 0;
-//        while (i < parts.length) {
-//            sb.append(parts[i]);
-////            if (message.length > i + 1) sb.append(message[i + 1]);
-////            else
-//                sb.append("{}");
-//            i++;
-//        }
+        StringBuilder sb = new StringBuilder();
+        String[] parts = message[0].split("\\{}");
 
-//        while (i < message.length - 1) {
-//            sb.append(message[i + 1]);
-//            i++;
-//        }
+        int i = 0;
+        while (i < parts.length) {
+            sb.append(parts[i]);
+            if (message.length > i + 1) sb.append(message[i + 1]);
+            else if (i + 1 < parts.length) sb.append("{}");
+            i++;
+        }
 
-//        return sb.toString();
-        return String.join("", message);
+        while (i + 1 < message.length - 1) {
+            sb.append(message[i + 1]);
+            i++;
+        }
+
+        return sb.toString();
     }
 
     public static void log(String message) {

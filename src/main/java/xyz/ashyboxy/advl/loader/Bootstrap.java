@@ -1,6 +1,7 @@
 package xyz.ashyboxy.advl.loader;
 
 import xyz.ashyboxy.advl.asm.Utils;
+import xyz.ashyboxy.advl.loader.transformers.ClassTransformer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +22,8 @@ public class Bootstrap {
         }
 
         Logger.info("Advl bootstrap finishing");
+
+        ClassTransformer.lockTransformerProviders();
 
         Class<?> c = cl.loadClass("xyz.ashyboxy.advl.asm.Main");
         c.getMethod("main", String[].class).invoke(null, (Object) args);

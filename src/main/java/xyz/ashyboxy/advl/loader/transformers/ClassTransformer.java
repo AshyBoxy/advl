@@ -8,16 +8,26 @@ import xyz.ashyboxy.advl.asm.Utils;
 import xyz.ashyboxy.advl.loader.Consts;
 import xyz.ashyboxy.advl.loader.mixin.MixinTransformerProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ClassTransformer {
-    private static final List<TransformerProvider> TRANSFORMER_PROVIDERS = List.of(
+    private static final List<TransformerProvider> TRANSFORMER_PROVIDERS = new ArrayList<>(List.of(
             new MixinTransformerProvider(),
             new TransformTransformerProvider(),
             new StringReplacerTransformerProvider()
-    );
+    ));
+
+    private static boolean locked = false;
+    public static void addTransformerProvider(TransformerProvider provider) {
+        TRANSFORMER_PROVIDERS.add(provider);
+    }
+    public static void lockTransformerProviders() {
+        if (locked) throw new AssertionError();
+        locked = true;
+    }
 
     public static byte[] transformClass(String name, byte[] originalClass) {
         return transformClass(name, originalClass, (n, t) -> true);
