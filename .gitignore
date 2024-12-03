@@ -11,3 +11,4 @@ gen/
 
 mcRun/
 logs/
+hs_err*

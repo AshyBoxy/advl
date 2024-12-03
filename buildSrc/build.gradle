@@ -1,7 +1,10 @@
 repositories {
+    maven { url = "https://maven.fabricmc.net/" }
     mavenCentral()
 }
 
 dependencies {
     implementation "com.google.code.gson:gson:2.11.0"
+    implementation "net.fabricmc:tiny-remapper:0.10.4"
+    implementation "net.fabricmc:mapping-io:0.6.1"
 }

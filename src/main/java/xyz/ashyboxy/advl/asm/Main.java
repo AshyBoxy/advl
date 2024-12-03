@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -115,9 +116,10 @@ public class Main {
             IsolatedTest.run();
         }
 
-        if (DO_NEXT) {
+        if (Potato.run) {
             Logger.log(LOG_BREAK);
             Logger.info("Calling next class: ", Potato.nextClass);
+            Logger.info("With arguments: ", Arrays.toString(Potato.nextArgs));
 
             // this causes a ton of lag with minecraft (duh)
             LOG_CLASS_LOADING = false;

@@ -24,9 +24,8 @@ sourceSets {
     }
 }
 
-tasks.register("runMc", JavaExec) {
+runMc {
     dependsOn ":testjars:allJars"
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = "xyz.ashyboxy.advl.loader.mc.Bootstrap"
     workingDir = rootDir
 }

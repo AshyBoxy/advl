@@ -6,7 +6,7 @@ import java.util.Map;
 
 public record Version(
         Object arguments,
-        Object assetIndex,
+        AssetIndex assetIndex,
         String assets,
         int complianceLevel,
         Map<String, Download> downloads,
@@ -23,7 +23,7 @@ public record Version(
     public record Download(
             String path,
             String sha1,
-            long size,
+            int size,
             URL url
     ) {
     }
@@ -55,5 +55,14 @@ public record Version(
     }
 
     public record OS(String name, String version, String arch) {
+    }
+
+    public record AssetIndex(
+            String id,
+            String sha1,
+            int size,
+            int totalSize,
+            URL url
+    ) {
     }
 }

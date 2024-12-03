@@ -41,6 +41,4 @@ public class Consts {
     public static final boolean DO_TRANSFORM_TEST = false;
     public static final boolean DO_ISOLATION_TEST = false;
     public static final boolean DO_JARS = true;
-
-    public static final boolean DO_NEXT = true;
 }
