@@ -31,4 +31,10 @@ public class Bootstrap {
 
         xyz.ashyboxy.advl.loader.Bootstrap.main(args);
     }
+
+    public static void callback() {
+        // i was going to use this to set the working directory to mcRun but it looks like that's not really a thing
+        // you can do in java
+        Logger.info("Hello from mc bootstrap callback");
+    }
 }

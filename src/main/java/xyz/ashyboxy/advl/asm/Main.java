@@ -125,6 +125,8 @@ public class Main {
             LOG_CLASS_LOADING = false;
 //            LOG_EXTRA_CLASS_LOADING = true;
 
+            Potato.callback.callback();
+
             Class<?> c = Main.class.getClassLoader().loadClass(Potato.nextClass);
             c.getMethod("main", String[].class).invoke(null, (Object) Potato.nextArgs);
         }
