@@ -13,6 +13,7 @@ public class Consts {
     public static final Path VERSION_JSON_PATH = Path.of("version.json");
     public static final Path CLIENT_JAR_PATH = Path.of("client.jar");
     public static final Path CLIENT_REMAPPED_JAR_PATH = Path.of("client-remapped.jar");
+    public static final Path CLIENT_SOURCE_JAR_PATH = Path.of("client-remapped-sources.jar");
     public static final Path CLIENT_MAPPINGS_PATH = Path.of("client-mappings.txt");
     public static final Path ASSETS_DIR = Path.of("assets");
 

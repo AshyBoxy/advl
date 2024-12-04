@@ -5,6 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ArtifactRepositoryContainer;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.tasks.TaskContainer;
 
 import java.io.IOException;
 import java.util.Map;
@@ -43,7 +44,10 @@ public class AdvlGradlePlugin implements Plugin<Project> {
             throw new RuntimeException(e);
         }
 
-        target.getTasks().register("runMc", RunMcTask.class, t -> {});
+        TaskContainer tasks = target.getTasks();
+        tasks.register("runMc", RunMcTask.class, t -> {});
+        tasks.register("decompileMc", DecompileTask.class, t -> {});
+
 //        target.getExtensions().create("advlmc", AdvlGradleExtension.class);
     }
 }
