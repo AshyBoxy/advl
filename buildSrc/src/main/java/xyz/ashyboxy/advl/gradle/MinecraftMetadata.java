@@ -45,7 +45,7 @@ public class MinecraftMetadata {
                 // ignoring natives for now, since we're not using < 1.19.3
                 if (!library.allowedForOS(currentOS)) return;
 
-                var dependency = project.getDependencies().add("implementation", library.name());
+                var dependency = project.getDependencies().add(Consts.MC_RUNTIME, library.name());
                 // thanks loom
                 if (dependency instanceof ModuleDependency md) md.setTransitive(false);
 

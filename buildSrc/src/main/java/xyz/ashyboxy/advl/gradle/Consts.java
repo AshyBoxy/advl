@@ -19,4 +19,7 @@ public class Consts {
 
     // other stuff
     public static final String TASK_GROUP = "advl";
+
+    // configurations
+    public static final String MC_RUNTIME = "mcRuntime";
 }

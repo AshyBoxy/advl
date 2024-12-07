@@ -1,10 +1,13 @@
 package xyz.ashyboxy.advl.gradle;
 
 import com.google.gson.Gson;
+import org.gradle.api.NamedDomainObjectProvider;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ArtifactRepositoryContainer;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskContainer;
 
 import java.io.IOException;
@@ -35,6 +38,15 @@ public class AdvlGradlePlugin implements Plugin<Project> {
         target.getRepositories().mavenCentral();
 
         try {
+            NamedDomainObjectProvider<Configuration> mcRuntimeConfiguration = target.getConfigurations().register(Consts.MC_RUNTIME);
+            mcRuntimeConfiguration.configure(c -> {
+                c.setCanBeConsumed(false);
+                c.setCanBeResolved(true);
+            });
+            target.getConfigurations().getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, c -> {
+                c.extendsFrom(mcRuntimeConfiguration.get());
+            });
+
             MinecraftFiles.init(target);
             MinecraftMetadata.download();
             MinecraftAssets.download();
@@ -46,6 +58,7 @@ public class AdvlGradlePlugin implements Plugin<Project> {
 
         TaskContainer tasks = target.getTasks();
         tasks.register("runMc", RunMcTask.class, t -> {});
+        tasks.register("remapMc", RemapMcTask.class, t -> {});
         tasks.register("decompileMc", DecompileTask.class, t -> {});
 
 //        target.getExtensions().create("advlmc", AdvlGradleExtension.class);

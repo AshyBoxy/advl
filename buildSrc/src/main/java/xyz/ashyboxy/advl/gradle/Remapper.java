@@ -16,15 +16,30 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import java.util.zip.ZipFile;
 
 public class Remapper {
+    // from 21w37a
+    public static final Pattern MC_LV_NAME_PATTERN = Pattern.compile("\\$\\$\\d+");
+    public static final Map<String, String> JAVAX_TO_JETBRAINS = Map.of(
+			"javax/annotation/Nullable", "org/jetbrains/annotations/Nullable",
+			"javax/annotation/Nonnull", "org/jetbrains/annotations/NotNull",
+			"javax/annotation/concurrent/Immutable", "org/jetbrains/annotations/Unmodifiable"
+    );
+
     public static void maybeRemap(File src, File dst, File mappings) throws IOException {
         if (!src.exists()) throw new RuntimeException(src + " does not exist");
         if (dst.exists()) return;
         if (!mappings.exists()) throw new RuntimeException(mappings + " does not exist");
+        remap(src.toPath(), dst.toPath(), mappings.toPath());
+    }
+
+    public static void tryRemap(File src, File dst, File mappings) throws IOException {
+        MinecraftMetadata.download();
+        if (dst.exists() && !dst.delete()) throw new RuntimeException("Could not delete " + dst);
         remap(src.toPath(), dst.toPath(), mappings.toPath());
     }
 
@@ -51,9 +66,11 @@ public class Remapper {
         IMappingProvider provider = TinyUtils.createMappingProvider(tree, srcNamespace, dstNamespace);
         TinyRemapper remapper = TinyRemapper.newRemapper()
                 .withMappings(provider)
+                .withMappings((out -> JAVAX_TO_JETBRAINS.forEach(out::acceptClass)))
                 .renameInvalidLocals(true)
                 .rebuildSourceFilenames(true)
                 .inferNameFromSameLvIndex(true)
+                .invalidLvNamePattern(MC_LV_NAME_PATTERN)
                 .build();
 
         try (OutputConsumerPath output = new OutputConsumerPath.Builder(dst).build()) {
